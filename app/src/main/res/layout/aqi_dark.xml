@@ -1,40 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/activity_aqi.xml -->
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:background="@drawable/dark_background"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".AqiActivity">
+    tools:context=".AQI_Light">
 
     <TextView
-        android:id="@+id/tv_location"
-        android:layout_width="81dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="192dp"
-        android:text="Location"
+        android:id="@+id/AQI_Header"
+        android:background="@drawable/border"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="AIR QUALITY INDEX"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/aqi_metric_dark"
+        android:layout_width="235dp"
+        android:layout_height="169dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Tittle"
+        app:srcCompat="@drawable/aqi_metric_dark" />
+
+    <TextView
+        android:id="@+id/AQI_Tittle"
+        android:layout_width="235dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="Current Air Quality"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#090000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Header" />
+
+    <TextView
+        android:id="@+id/AQI_Date"
+        android:layout_width="123dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="88dp"
+        android:text="Date"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Tittle" />
+
+    <TextView
+        android:id="@+id/AQI_Time"
+        android:layout_width="112dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="8dp"
+        android:text="Time"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Tittle" />
 
     <Button
-        android:id="@+id/b_location"
+        android:id="@+id/Btn_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="312dp"
-        android:text="Get Location"
+        android:text="Details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/AQI" />
 
+    <ImageView
+        android:id="@+id/Trees"
+        android:background="@drawable/border"
+        android:layout_width="73dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/trees" />
 
-    <!-- Other layout elements -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="72dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent">
 
+        <LinearLayout
+            android:layout_width="243dp"
+            android:layout_height="match_parent"
+            android:background="#F6F0F0"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/AQI_Date"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="Wednesday"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/AQI_DateTmrw"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="Thursday"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/AQI_DateTmrw2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="Friday"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5EFEF"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="565dp">
+
+            <TextView
+                android:id="@+id/AQI_Value"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="50"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/AQI_ValueTmrw"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="46"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/AQI_ValueTmrw2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:text="54"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/AQI_DailyForecast"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:text="Daily Forecast"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:typeface="sans" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/AQI_Location"
+        android:layout_width="227dp"
+        android:layout_height="31dp"
+        android:text="Location"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Btn_details" />
+
+    <TextView
+        android:id="@+id/AQI_Value"
+        android:layout_width="83dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="76dp"
+        android:text="Value"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Tittle" />
+
+    <TextView
+        android:id="@+id/AQI_Lvl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Level severity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Value" />
+
+    <TextView
+        android:id="@+id/AQI"
+        android:layout_width="70dp"
+        android:layout_height="28dp"
+        android:text="Air Quality"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Lvl" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

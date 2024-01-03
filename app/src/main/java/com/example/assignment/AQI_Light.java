@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AqiActivity extends AppCompatActivity implements IBaseGpsListener{
+public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
 
     private static final int PERMISSION_LOCATION = 1000;
     private TextView textViewAqiValue;
