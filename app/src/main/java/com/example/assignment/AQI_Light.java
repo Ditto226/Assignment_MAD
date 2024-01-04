@@ -30,8 +30,8 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aqi_light);
 
-        tv_location = findViewById(R.id.tv_location);
-        b_location = findViewById(R.id.b_location);
+        tv_location = findViewById(R.id.AQI_Location);
+        b_location = findViewById(R.id.Btn_Location);
 
         b_location.setOnClickListener(new View.OnClickListener() {
             @Override

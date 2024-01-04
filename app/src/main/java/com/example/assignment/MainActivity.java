@@ -1,5 +1,7 @@
 package com.example.assignment;
 
+import static com.example.assignment.HttpUtils.parseAndDisplayAQI;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,27 +16,69 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Address;
+import android.location.Geocoder;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
 
     private static final int PERMISSION_LOCATION = 1000;
     private TextView textViewAqiValue;
-    TextView tv_location;
-    Button b_location;
+    private TextView date;
+    private Geocoder geocoder;
+    TextView AQI_location;
+
+    TextView PM10;
+    TextView PM2_5;
+    TextView O3;
+    TextView NO2;
+    TextView SO2;
+    TextView CO;
+
+    Button Btn_location;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.aqi_light);
+        setContentView(R.layout.activity_aqipollutants);
 
-        tv_location = findViewById(R.id.tv_location);
-        b_location = findViewById(R.id.b_location);
+        AQI_location = findViewById(R.id.AQI_Location);
+        Btn_location = findViewById(R.id.Btn_Location);
+        date = findViewById(R.id.AQI_Date2);
+        PM10 =findViewById(R.id.AQI_PM10V);
+        PM2_5 = findViewById(R.id.AQI_PM25V);
+        O3 = findViewById(R.id.AQI_O3V);
+        NO2 =findViewById(R.id.AQI_NO2V);
+        SO2 = findViewById(R.id.AQI_SO2V);
+        CO = findViewById(R.id.AQI_COV);
 
-        b_location.setOnClickListener(new View.OnClickListener() {
+        geocoder = new Geocoder(this, Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MM-yyyy");
+        String currentDateandTime = sdf.format(new Date());
+
+        String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
+        String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=37.7749&lon=-122.4194&appid=" + apiKey;
+        HttpUtils.getRequest(apiUrl, new HttpUtils.OnHttpResponseListener() {
             @Override
+            public void onHttpResponse(Context context,String response) {
+                // Handle the HTTP response here
+                if (response != null) {
+                    parseAndDisplayAQI(context,response);
+                }
+            }
+        });
+        Btn_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                         checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -42,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
                 } else {
                     showLocation();
+                    date.setText(currentDateandTime);
                 }
             }
         });
@@ -58,12 +103,22 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         }
     }
 
+    private void getAQIData(double latitude, double longitude) {
+        // Construct the API URL with your API key
+        String apiKey = "YOUR_OPENWEATHERMAP_API_KEY";
+        String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" +
+                latitude + "&lon=" + longitude + "&appid=" + apiKey;
+
+        // Make the API request (you can use libraries like Retrofit or HttpURLConnection)
+        // Update UI with AQI information
+    }
+
     @SuppressLint("MissingPermission")
     private void showLocation(){
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            tv_location.setText("Loading location...");
+            AQI_location.setText("Loading location...");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
         }else{
             Toast.makeText(this,"Enable GPS", Toast.LENGTH_SHORT).show();
@@ -71,12 +126,21 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         }
     }
     //show location as string
-    private  String hereLocation(Location location){
-        return "Lat: "+location.getLatitude()+"\nLong: "+location.getLongitude();
+    private String hereLocation(Location location) {
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                return address.getAdminArea() + ", " + address.getCountryCode();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude();
     }
     @Override
     public void onLocationChanged(Location location) {
-        tv_location.setText(hereLocation(location));
+        AQI_location.setText(hereLocation(location));
     }
 
     @Override

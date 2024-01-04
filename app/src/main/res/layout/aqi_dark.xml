@@ -51,7 +51,6 @@
         android:id="@+id/AQI_Date"
         android:layout_width="123dp"
         android:layout_height="19dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="88dp"
         android:text="Date"
         android:textAlignment="center"
@@ -61,11 +60,10 @@
         app:layout_constraintTop_toBottomOf="@+id/AQI_Tittle" />
 
     <TextView
-        android:id="@+id/AQI_Time"
+        android:id="@+id/AQI_Date2"
         android:layout_width="112dp"
         android:layout_height="19dp"
         android:layout_marginStart="88dp"
-        android:layout_marginTop="8dp"
         android:text="Time"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -112,7 +110,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/AQI_Date"
+                android:id="@+id/AQI_date"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/border"
@@ -146,7 +144,7 @@
             tools:layout_editor_absoluteY="565dp">
 
             <TextView
-                android:id="@+id/AQI_Value"
+                android:id="@+id/AQI_value"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/border"
