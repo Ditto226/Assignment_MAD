@@ -1,6 +1,6 @@
 package com.example.assignment;
 
-import static com.example.assignment.HttpUtils.parseAndDisplayAQI;
+
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
     private static final int PERMISSION_LOCATION = 1000;
     private TextView textViewAqiValue;
     private TextView date;
-    private Geocoder geocoder;
     TextView AQI_location;
 
     TextView PM10;
@@ -42,9 +42,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
     TextView NO2;
     TextView SO2;
     TextView CO;
-
     Button Btn_location;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         SO2 = findViewById(R.id.AQI_SO2V);
         CO = findViewById(R.id.AQI_COV);
 
-        geocoder = new Geocoder(this, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MM-yyyy");
         String currentDateandTime = sdf.format(new Date());
 
@@ -69,12 +67,13 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=37.7749&lon=-122.4194&appid=" + apiKey;
         HttpUtils.getRequest(apiUrl, new HttpUtils.OnHttpResponseListener() {
             @Override
-            public void onHttpResponse(Context context,String response) {
+            public void onHttpResponse(Context context, String response) {
                 // Handle the HTTP response here
                 if (response != null) {
-                    parseAndDisplayAQI(context,response);
+                    HttpUtils.parseAndDisplayAQI((MainActivity) context, response);
                 }
             }
+
         });
         Btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,15 +102,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         }
     }
 
-    private void getAQIData(double latitude, double longitude) {
-        // Construct the API URL with your API key
-        String apiKey = "YOUR_OPENWEATHERMAP_API_KEY";
-        String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" +
-                latitude + "&lon=" + longitude + "&appid=" + apiKey;
-
-        // Make the API request (you can use libraries like Retrofit or HttpURLConnection)
-        // Update UI with AQI information
-    }
 
     @SuppressLint("MissingPermission")
     private void showLocation(){
@@ -128,16 +118,24 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
     //show location as string
     private String hereLocation(Location location) {
         try {
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                return address.getAdminArea() + ", " + address.getCountryCode();
+            if (Geocoder.isPresent()) {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                if (addresses != null && addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    return address.getAdminArea() + ", " + address.getCountryCode();
+                }
+            } else {
+                return "Geocoder is not available";
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return "Error retrieving location";
         }
         return "Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude();
     }
+
     @Override
     public void onLocationChanged(Location location) {
         AQI_location.setText(hereLocation(location));
