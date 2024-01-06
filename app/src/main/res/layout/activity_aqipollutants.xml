@@ -28,7 +28,7 @@
         android:id="@+id/AQI_Location"
         android:layout_width="331dp"
         android:layout_height="48dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="50dp"
         android:text="Location"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -43,7 +43,7 @@
         android:id="@+id/Btn_Location"
         android:layout_width="114dp"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="@color/material_dynamic_neutral80"
         android:text="Set location"
         android:textColor="#000000"
@@ -51,15 +51,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AQI_Date2"
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Time"
         app:strokeColor="#000000"
         app:strokeWidth="2sp" />
 
     <TextView
-        android:id="@+id/AQI_Date2"
+        android:id="@+id/AQI_Time"
         android:layout_width="331dp"
         android:layout_height="34dp"
-        android:layout_marginTop="8dp"
         android:text="Date"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -71,6 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/AQI_Location" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="301dp"
         android:layout_height="391dp"
         android:layout_marginBottom="64dp"
