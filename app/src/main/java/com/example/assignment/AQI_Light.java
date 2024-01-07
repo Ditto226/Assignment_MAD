@@ -19,9 +19,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +67,6 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aqi_light);
 
-        time = findViewById(R.id.AQI_Time);
         location = findViewById(R.id.AQI_Location);
         lvl = findViewById(R.id.AQI_Lvl);
         today = findViewById(R.id.AQI_Date);
@@ -82,7 +86,7 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
         detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AQI_Light.this, AQIpollutants.class);
+                Intent intent = new Intent(AQI_Light.this, AQI_Pollutants.class);
                 startActivity(intent);
             }
         });
@@ -92,7 +96,6 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
     @SuppressLint("MissingPermission")
     private void Location(){
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             location.setText("Loading location...");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
@@ -122,8 +125,8 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
         return "Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude();
     }
     @Override
-    public void onLocationChanged(Location location) {
-//        tv_location.setText(hereLocation(location));
+    public void onLocationChanged(Location locations) {
+        location.setText(hereLocation(locations));
     }
 
 
@@ -149,47 +152,103 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
     public void AQI(){
         String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
         String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=37.7749&lon=-122.4194&appid="+apiKey;
-        String jsonData = getJSONFromURL(apiUrl);
+//        String jsonData = getJSONFromURL(apiUrl);
 
-        try {
-            JSONObject json = new JSONObject(jsonData);
-            JSONArray dataList = json.getJSONArray("list");
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-            // Calculate daily average AQI for today and the next 3 days
-            int sumAQI = 0;
-            int count = 0;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,  // Adjust the method based on your API requirements
+                apiUrl,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //JSONObject json = new JSONObject(jsonData);
+                            JSONArray dataList = response.getJSONArray("list");
 
-            for (int i = 0; i < dataList.length(); i++) {
-                JSONObject data = dataList.getJSONObject(i);
-                int aqi = data.getJSONObject("main").getInt("aqi");
-                int day = i / 24;  // Assuming data is available every 3 hours, so 8 data points per day
-                sumAQI += aqi;
-                count++;
+                            // Calculate daily average AQI for today and the next 3 days
+                            int sumAQI = 0;
+                            int count = 0;
 
-                if(count%24==0 && count!=0){
-                    int averageAQI = sumAQI/24;
-                    switch (day){
-                        case(0):
-                            todayv.setText(""+averageAQI);
-                            break;
-                        case(1):
-                            tmrwv.setText(""+averageAQI);
-                            break;
-                        case(2):
-                            tmrw2v.setText(""+averageAQI);
-                            break;
-                        case(3):
-                            tmrw3v.setText(""+averageAQI);
+                            for (int i = 0; i < dataList.length(); i++) {
+                                JSONObject data = dataList.getJSONObject(i);
+                                int aqi = data.getJSONObject("main").getInt("aqi");
+                                int day = i / 24;  // Assuming data is available every 1 hours, so 24 data points per day
+                                sumAQI += aqi;
+                                count++;
+
+                                if (count % 24 == 0 && count != 0) {
+                                    int averageAQI = sumAQI / 24;
+                                    switch (day) {
+                                        case 0:
+                                            setTextViewWithColor(todayv, averageAQI);
+                                            break;
+                                        case 1:
+                                            setTextViewWithColor(tmrwv, averageAQI);
+                                            break;
+                                        case 2:
+                                            setTextViewWithColor(tmrw2v, averageAQI);
+                                            break;
+                                        case 3:
+                                            setTextViewWithColor(tmrw3v, averageAQI);
+                                            break;
+                                    }
+                                    setTextViewWithColor(lvl, averageAQI);
+                                    int color = lvl.getCurrentTextColor();
+
+                                    if (color == ContextCompat.getColor(AQI_Light.this, R.color.GOOD)) {
+                                        lvl.setText("GOOD");
+                                    } else if (color == ContextCompat.getColor(AQI_Light.this, R.color.FAIR)) {
+                                        lvl.setText("FAIR");
+                                    } else if (color == ContextCompat.getColor(AQI_Light.this, R.color.MODERATE)) {
+                                        lvl.setText("MODERATE");
+                                    } else if (color == ContextCompat.getColor(AQI_Light.this, R.color.POOR)) {
+                                        lvl.setText("POOR");
+                                    } else if (color == ContextCompat.getColor(AQI_Light.this, R.color.black)) {
+                                        lvl.setText("VERY POOR");
+                                    }
+
+                                    sumAQI = 0;
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    sumAQI = 0;
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors
+                    }
                 }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        );
+        requestQueue.add(jsonObjectRequest);
     }
 
+    public void setTextViewWithColor(TextView textView, int averageAQI) {
+        switch (averageAQI) {
+            case 1:
+                textView.setTextColor(ContextCompat.getColor(AQI_Light.this, R.color.GOOD));
+                break;
+            case 2:
+                textView.setTextColor(ContextCompat.getColor(AQI_Light.this, R.color.FAIR));
+                break;
+            case 3:
+                textView.setTextColor(ContextCompat.getColor(AQI_Light.this, R.color.MODERATE));
+                break;
+            case 4:
+                textView.setTextColor(ContextCompat.getColor(AQI_Light.this, R.color.POOR));
+                break;
+            case 5:
+                textView.setTextColor(ContextCompat.getColor(AQI_Light.this, R.color.black));
+                break;
+        }
+        textView.setText(String.valueOf(averageAQI));
+    }
 
     public static String getJSONFromURL(String url){
         String jsontext="";
@@ -240,3 +299,4 @@ public class AQI_Light extends AppCompatActivity implements IBaseGpsListener{
     }
 
 }
+

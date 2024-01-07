@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/light_background"
+    android:outlineAmbientShadowColor="#E91010"
     tools:context=".AQI_Light">
 
     <TextView
         android:id="@+id/AQI_Header"
-        android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="57dp"
+        android:background="@drawable/border"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="AIR QUALITY INDEX"
         android:textAlignment="center"
@@ -27,6 +28,7 @@
         android:id="@+id/linearLayout4"
         android:layout_width="127dp"
         android:layout_height="234dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center|top"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/Trees"
@@ -42,20 +44,31 @@
             android:text="Value"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="20sp" />
+            android:textSize="30sp"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="2"/>
 
         <TextView
             android:id="@+id/AQI_Lvl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Level severity" />
+            android:text="Level severity"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="2"/>
 
         <TextView
             android:id="@+id/AQI"
             android:layout_width="70dp"
             android:layout_height="28dp"
             android:text="Air Quality"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000000" />
 
         <Button
             android:id="@+id/Btn_details"
@@ -92,6 +105,7 @@
         android:id="@+id/aqi_metric_dark"
         android:layout_width="235dp"
         android:layout_height="169dp"
+        android:outlineAmbientShadowColor="#2D2F31"
         app:layout_constraintBottom_toTopOf="@+id/Trees"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
         app:layout_constraintStart_toStartOf="@+id/linearLayout4"
@@ -100,26 +114,27 @@
 
     <TextView
         android:id="@+id/AQI_Tittle"
-        android:layout_width="235dp"
-        android:layout_height="41dp"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
         android:layout_marginTop="56dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="Current Air Quality"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#090000"
+        android:textSize="35sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AQI_Header" />
 
     <TextView
         android:id="@+id/AQI_Date"
-        android:layout_width="232dp"
-        android:layout_height="23dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="260dp"
+        android:layout_height="40dp"
         android:text="Date"
         android:textAlignment="center"
         android:textColor="#000000"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
@@ -182,6 +197,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/border"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"
                 android:text="50"
                 android:textAlignment="center" />
 
@@ -191,7 +210,11 @@
                 android:layout_height="50dp"
                 android:background="@drawable/border"
                 android:text="46"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"/>
 
             <TextView
                 android:id="@+id/AQI_ValueTmrw2"
@@ -199,7 +222,11 @@
                 android:layout_height="50dp"
                 android:background="@drawable/border"
                 android:text="54"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"/>
         </LinearLayout>
     </LinearLayout>
 

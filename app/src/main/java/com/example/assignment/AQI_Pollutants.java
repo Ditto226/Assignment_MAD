@@ -6,6 +6,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener{
+public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListener{
 
     private static final int PERMISSION_LOCATION = 1000;
     private TextView date;
@@ -50,11 +51,12 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
     TextView SO2;
     TextView CO;
     Button Btn_location;
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_aqipollutants);
+        setContentView(R.layout.aqi_pollutants);
 
         AQI_location = findViewById(R.id.AQI_Location);
         Btn_location = findViewById(R.id.Btn_Location);
@@ -69,7 +71,7 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MM-yyyy");
         String currentDateandTime = sdf.format(new Date());
 
-        showLocation();
+        Location();
         date.setText(currentDateandTime);
         AQIPollutants();
         Btn_location.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +83,7 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
                                 PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
                 } else {
-                    showLocation();
+                    Location();
                     date.setText(currentDateandTime);
                     AQIPollutants();
                 }
@@ -90,51 +92,68 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
     }
 
 
-    public void AQIPollutants(){
+    public void AQIPollutants() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-        String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=37.7749&lon=-122.4194&appid="+apiKey;      //must implement com.android.volley:volley:1.2.1
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(apiUrl, new Response.Listener<JSONObject>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject mainObject = response.getJSONArray("list").getJSONObject(0).getJSONObject("main");
-                    int aqiValue = mainObject.getInt("aqi");
+        // Ensure that the location is not null before proceeding
+        if (location != null) {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-                    // Display the AQI information using the provided context
-                    String aqiMessage = "Air Quality Index: " + aqiValue;
-                    Toast.makeText(getApplicationContext(), aqiMessage, Toast.LENGTH_SHORT).show();
+                if (addresses != null && addresses.size() > 0) {
+                    String lat = String.valueOf(location.getLatitude());
+                    String lon = String.valueOf(location.getLongitude());
 
-                    JSONObject componentObject = response.getJSONArray("list").getJSONObject(0).getJSONObject("components");
+                    String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
+                    String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
-                    PM10.setText(""+componentObject.getDouble("pm10"));
-                    PM2_5.setText(""+componentObject.getDouble("pm2_5"));
-                    O3.setText(""+componentObject.getDouble("o3"));
-                    NO2.setText(""+componentObject.getDouble("no2"));
-                    SO2.setText(""+componentObject.getDouble("so2"));
-                    CO.setText(""+componentObject.getDouble("co"));
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(apiUrl, new Response.Listener<JSONObject>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONObject componentObject = response.getJSONArray("list").getJSONObject(0).getJSONObject("components");
 
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                                PM10.setText("" + componentObject.getDouble("pm10"));
+                                PM2_5.setText("" + componentObject.getDouble("pm2_5"));
+                                O3.setText("" + componentObject.getDouble("o3"));
+                                NO2.setText("" + componentObject.getDouble("no2"));
+                                SO2.setText("" + componentObject.getDouble("so2"));
+                                CO.setText("" + componentObject.getDouble("co"));
+
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Handle error response
+                        }
+                    });
+
+                    RequestQueue referenceQueue = Volley.newRequestQueue(this);
+                    referenceQueue.add(jsonObjectRequest);
+                } else {
+                    // Handle the case where addresses are not available
+                    Toast.makeText(this, "Error retrieving address", Toast.LENGTH_SHORT).show();
                 }
 
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        RequestQueue referenceQueue = Volley.newRequestQueue(this);
-        referenceQueue.add(jsonObjectRequest);
+        } else {
+            // Handle the case where the location is null
+            Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     public void onRequestPermissionResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults){
         if(requestCode == PERMISSION_LOCATION){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                showLocation();
+                Location();
             }else{
                 Toast.makeText(this,"Permission not granted", Toast.LENGTH_SHORT).show();
                 finish();
@@ -144,7 +163,7 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
 
 
     @SuppressLint("MissingPermission")
-    private void showLocation(){
+    private void Location(){
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
@@ -178,6 +197,7 @@ public class AQIpollutants extends AppCompatActivity implements IBaseGpsListener
 
     @Override
     public void onLocationChanged(Location location) {
+        this.location = location;
         AQI_location.setText(hereLocation(location));
     }
 

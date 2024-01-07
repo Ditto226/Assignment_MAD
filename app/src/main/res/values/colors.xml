@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="GOOD">#FFABA863</color>
+    <color name="FAIR">#FFEEEA77</color>
+    <color name="MODERATE">#FFE58F40</color>
+    <color name="POOR">#FFE58F40</color>
 </resources>

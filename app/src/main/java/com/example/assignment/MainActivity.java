@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Assuming AQIpollutants is an activity class
+        // Assuming AQI_Pollutants is an activity class
         Intent intent = new Intent(this, AQI_Light.class);
         startActivity(intent);
     }
