@@ -24,6 +24,7 @@ import android.location.Geocoder;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -50,7 +51,6 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
     TextView NO2;
     TextView SO2;
     TextView CO;
-    Button Btn_location;
     Location location;
 
     @Override
@@ -59,7 +59,6 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
         setContentView(R.layout.aqi_pollutants);
 
         AQI_location = findViewById(R.id.AQI_Location);
-        Btn_location = findViewById(R.id.Btn_Location);
         date = findViewById(R.id.AQI_Time);
         PM10 =findViewById(R.id.AQI_PM10V);
         PM2_5 = findViewById(R.id.AQI_PM25V);
@@ -74,45 +73,34 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
         Location();
         date.setText(currentDateandTime);
         AQIPollutants();
-        Btn_location.setOnClickListener(new View.OnClickListener() {
-            @Override
 
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                                PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
-                } else {
-                    Location();
-                    date.setText(currentDateandTime);
-                    AQIPollutants();
-                }
-            }
-        });
     }
 
 
     public void AQIPollutants() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Ensure that the location is not null before proceeding
-        if (location != null) {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            @SuppressLint("MissingPermission")
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                if (addresses != null && addresses.size() > 0) {
-                    String lat = String.valueOf(location.getLatitude());
-                    String lon = String.valueOf(location.getLongitude());
+            if (lastKnownLocation != null) {
+                double lat = lastKnownLocation.getLatitude();
+                double lon = lastKnownLocation.getLongitude();
 
-                    String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-                    String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+                String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
+                String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(apiUrl, new Response.Listener<JSONObject>() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
+                RequestQueue requestQueue = Volley.newRequestQueue(this);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                        Request.Method.GET,  // Adjust the method based on your API requirements
+                        apiUrl,
+                        null,
+                        new Response.Listener<JSONObject>() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
                                 JSONObject componentObject = response.getJSONArray("list").getJSONObject(0).getJSONObject("components");
 
                                 PM10.setText("" + componentObject.getDouble("pm10"));
@@ -122,30 +110,24 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
                                 SO2.setText("" + componentObject.getDouble("so2"));
                                 CO.setText("" + componentObject.getDouble("co"));
 
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // Handle errors
                             }
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // Handle error response
-                        }
-                    });
-
-                    RequestQueue referenceQueue = Volley.newRequestQueue(this);
-                    referenceQueue.add(jsonObjectRequest);
-                } else {
-                    // Handle the case where addresses are not available
-                    Toast.makeText(this, "Error retrieving address", Toast.LENGTH_SHORT).show();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                );
+                requestQueue.add(jsonObjectRequest);
+            } else {
+                // Handle the case where lastKnownLocation is null
             }
         } else {
-            // Handle the case where the location is null
-            Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
+            // Handle the case where GPS is not enabled
         }
     }
 

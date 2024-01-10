@@ -28,7 +28,7 @@
         android:id="@+id/AQI_Location"
         android:layout_width="331dp"
         android:layout_height="48dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:text="Location"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -39,26 +39,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AQI_Header" />
 
-    <Button
-        android:id="@+id/Btn_Location"
-        android:layout_width="114dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/material_dynamic_neutral80"
-        android:text="Set location"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AQI_Time"
-        app:strokeColor="#000000"
-        app:strokeWidth="2sp" />
-
     <TextView
         android:id="@+id/AQI_Time"
         android:layout_width="331dp"
         android:layout_height="34dp"
+        android:layout_marginTop="20dp"
         android:text="Date"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -78,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Btn_Location">
+        app:layout_constraintTop_toBottomOf="@+id/AQI_Time">
 
         <LinearLayout
             android:layout_width="150dp"

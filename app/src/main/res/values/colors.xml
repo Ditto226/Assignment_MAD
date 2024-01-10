@@ -5,5 +5,5 @@
     <color name="GOOD">#FFABA863</color>
     <color name="FAIR">#FFEEEA77</color>
     <color name="MODERATE">#FFE58F40</color>
-    <color name="POOR">#FFE58F40</color>
+    <color name="POOR">#E91010</color>
 </resources>
