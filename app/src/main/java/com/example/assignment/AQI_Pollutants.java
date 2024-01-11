@@ -166,7 +166,7 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
 
                 if (addresses != null && addresses.size() > 0) {
                     Address address = addresses.get(0);
-                    return address.getAdminArea() + ", " + address.getCountryName();
+                    return address.getAddressLine(0);
                 }
             } else {
                 return "Geocoder is not available";

@@ -1,6 +1,7 @@
 package com.example.assignment;
 
 import android.annotation.SuppressLint;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -41,11 +42,11 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
     TextView today;
     TextView tmrw;
     TextView tmrw2;
-    TextView tmrw3;
+//    TextView tmrw3;
     TextView todayv;
     TextView tmrwv;
     TextView tmrw2v;
-    TextView tmrw3v;
+//    TextView tmrw3v;
     Button detail;
 
     @Override
@@ -58,11 +59,11 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
         today = findViewById(R.id.AQI_Date);
         tmrw = findViewById(R.id.AQI_DateTmrw0);
         tmrw2 = findViewById(R.id.AQI_DateTmrw);
-        tmrw3 = findViewById(R.id.AQI_DateTmrw2);
+//        tmrw3 = findViewById(R.id.AQI_DateTmrw2);
         todayv = findViewById(R.id.AQI_Value);
         tmrwv = findViewById(R.id.AQI_ValueTmrw0);
         tmrw2v = findViewById(R.id.AQI_ValueTmrw);
-        tmrw3v = findViewById(R.id.AQI_ValueTmrw2);
+//        tmrw3v = findViewById(R.id.AQI_ValueTmrw2);
         detail = findViewById(R.id.Btn_details);
 
         Date();
@@ -99,7 +100,7 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
 
                 if (addresses != null && addresses.size() > 0) {
                     Address address = addresses.get(0);
-                    return address.getAdminArea() + ", " + address.getCountryName();
+                    return address.getAddressLine(0);
                 }
             } else {
                 return "Geocoder is not available";
@@ -147,7 +148,7 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
                 double lon = lastKnownLocation.getLongitude();
 
                 String apiKey = "bfae835a587c463187d4178050f47717";
-                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/airquality?lat=" + lat + "&lon=" + lon +"&start_date="+ firstdate()+"&end_date="+lastDate()+"tz=local&key=" + apiKey;
+                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/airquality?lat=" + lat + "&lon=" + lon + "&start_date=" + firstDate() + "&end_date=" + lastDate() + "&key=" + apiKey;
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -201,10 +202,10 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
                                                     tmrw2v.setText(String.valueOf(averageAQI));
                                                     setTextViewWithColor(tmrw2v,averageAQI);
                                                     break;
-                                                case 3:
-                                                    tmrw3v.setText(String.valueOf(averageAQI));
-                                                    setTextViewWithColor(tmrw3v,averageAQI);
-                                                    break;
+//                                                case 3:
+//                                                    tmrw3v.setText(String.valueOf(averageAQI));
+//                                                    setTextViewWithColor(tmrw3v,averageAQI);
+//                                                    break;
                                             }
                                             sumAQI = 0;
                                         }
@@ -235,13 +236,13 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
         if(averageAQI<51) {
             textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.GOOD));}
         else if(averageAQI<101){
-            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.GOOD));}
+            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.MODERATE));}
         else if(averageAQI<151){
-            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.GOOD));}
+            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.POOR));}
         else if(averageAQI<201){
-            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.GOOD));}
+            textView.setTextColor(ContextCompat.getColor(AQI.this, R.color.VERYPOOR));}
         else{
-            textView.setText(String.valueOf(averageAQI));}
+            textView.setTextColor(ContextCompat.getColor(AQI.this,R.color.black));}
     }
 //
 //    public static String getJSONFromURL(String url){
@@ -273,41 +274,34 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
 
         calendar.add(Calendar.DAY_OF_MONTH,1);
         Date tomorrowDate2 = calendar.getTime();
-        SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE, dd-MM-yyyy");
-        String tmrw2S = sdf2.format(tomorrowDate2);
+        String tmrw2S = sdf.format(tomorrowDate2);
 
         calendar.add(Calendar.DAY_OF_MONTH,1);
         Date tomorrowDate3 = calendar.getTime();
-        SimpleDateFormat sdf3 = new SimpleDateFormat("EEEE, dd-MM-yyyy");
-        String tmrw3S = sdf3.format(tomorrowDate3);
+        String tmrw3S = sdf.format(tomorrowDate3);
 
         calendar.add(Calendar.DAY_OF_MONTH,1);
         Date tomorrowDate4 = calendar.getTime();
-        SimpleDateFormat sdf4 = new SimpleDateFormat("EEEE, dd-MM-yyyy");
-        String tmrw4S = sdf4.format(tomorrowDate4);
+        String tmrw4S = sdf.format(tomorrowDate4);
 
         today.setText(todayS);
         tmrw.setText(tmrw2S);
         tmrw2.setText(tmrw3S);
-        tmrw3.setText(tmrw4S);
+//        tmrw3.setText(tmrw4S);
     }
-    public String firstdate(){
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        String todayS = calendar.toString();
-        return todayS;
+    public String firstDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentDate = new Date();
+        return sdf.format(currentDate);
     }
-    public String lastDate(){
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        String todayS = calendar.toString();
 
-        calendar.add(Calendar.DAY_OF_MONTH,3);
-        Date tomorrowDate2 = calendar.getTime();
-        String tmrw2S = calendar.toString();
-        return tmrw2S;
+    public String lastDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 4);
+        Date lastDate = calendar.getTime();
+        return sdf.format(lastDate);
     }
 }
 
