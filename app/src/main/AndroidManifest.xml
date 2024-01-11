@@ -28,7 +28,7 @@
             android:name=".AQI_Pollutants"
             android:exported="false" />
         <activity
-            android:name=".AQI_Light"
+            android:name=".AQI"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener{
         setContentView(R.layout.activity_main);
 
         // Assuming AQI_Pollutants is an activity class
-        Intent intent = new Intent(this, AQI_Light.class);
+        Intent intent = new Intent(this, AQI.class);
         startActivity(intent);
     }
 

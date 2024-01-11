@@ -65,7 +65,7 @@ public class Alert_List extends AppCompatActivity {
                 double lon = lastKnownLocation.getLongitude();
 
                 String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-                String apiUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+                String apiUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&appid=" + apiKey;
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -86,7 +86,7 @@ public class Alert_List extends AppCompatActivity {
                                     for (int i = 0; i < weatherList.length(); i++) {
                                         JSONObject weatherObject = weatherList.getJSONObject(i);
 
-                                        double temperature = weatherObject.getJSONObject("main").getDouble("temp");
+                                        double temperature = weatherObject.getJSONObject("main").getDouble("feels_like");
                                         int id = weatherObject.getJSONArray("weather").getJSONObject(0).getInt("id");
                                         String time = weatherObject.getString("dt_txt");
 
@@ -96,11 +96,11 @@ public class Alert_List extends AppCompatActivity {
                                     }
 
                                     for(Alert.WeatherEntry entry:weatherEntries){
-                                        if(entry.temperature >305){
+                                        if(entry.temperature >310){
                                             Alert.add(entry);
                                         }
                                         switch (entry.id){
-                                            case(502): case(503): case(504):
+                                            case(501): case(502): case(503): case(504):
                                             case(200): case(201): case(202):
                                             case(210): case(211): case(212):
                                             case(221): case(230): case(231): case(232):

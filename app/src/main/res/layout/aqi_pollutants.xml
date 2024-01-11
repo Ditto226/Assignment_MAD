@@ -26,8 +26,8 @@
 
     <TextView
         android:id="@+id/AQI_Location"
-        android:layout_width="331dp"
-        android:layout_height="48dp"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
         android:layout_marginTop="60dp"
         android:text="Location"
         android:textAlignment="textStart"
@@ -41,9 +41,9 @@
 
     <TextView
         android:id="@+id/AQI_Time"
-        android:layout_width="331dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
         android:text="Date"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -56,8 +56,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="301dp"
-        android:layout_height="391dp"
+        android:layout_width="300dp"
+        android:layout_height="390dp"
         android:background="@color/white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
