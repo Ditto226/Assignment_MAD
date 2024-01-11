@@ -198,7 +198,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
 
         String getMessage(){
             if(temperature>310){
-                return  "Its gonna be too hot outside! Drink plenty of water and stay hydrated!";
+                return  "Its going to be scorching outside! Drink plenty of water and stay hydrated!";
             }
             switch (id) {
                 case 501: case 502: case 503: case 504:
