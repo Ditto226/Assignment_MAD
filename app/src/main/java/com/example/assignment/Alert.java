@@ -118,7 +118,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
                                     }
 
                                     for(Alert.WeatherEntry entry:weatherEntries){
-                                        if(entry.temperature >310){
+                                        if(entry.temperature>=310){
                                             alertlist.add(entry);
                                         }
                                         switch (entry.id){
@@ -175,7 +175,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         }
 
         String getType(){
-            if(temperature>310){
+            if(temperature>=310){
                 return  "blazing hot";
             }
             switch (id) {
@@ -197,7 +197,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         }
 
         String getMessage(){
-            if(temperature>310){
+            if(temperature>=310){
                 return  "Its going to be scorching outside! Drink plenty of water and stay hydrated!";
             }
             switch (id) {
@@ -235,7 +235,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
 
         Drawable getIconDrawable(Context context) {
             Resources resources = context.getResources(); // Assuming this method is within an Activity or Context
-            if(temperature>310){
+            if(temperature>=310){
                 return  resources.getDrawable(R.drawable.hot);
             }
             switch (id) {

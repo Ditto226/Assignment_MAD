@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -88,8 +89,8 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
                 double lat = lastKnownLocation.getLatitude();
                 double lon = lastKnownLocation.getLongitude();
 
-                String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-                String apiUrl = "https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+                String apiKey = "bfae835a587c463187d4178050f47717";
+                String apiUrl = "https://api.weatherbit.io/v2.0/current/airquality?lat=" + lat + "&lon=" + lon +"&key="+ apiKey;
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -101,14 +102,14 @@ public class AQI_Pollutants extends AppCompatActivity implements IBaseGpsListene
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                JSONObject componentObject = response.getJSONArray("list").getJSONObject(0).getJSONObject("components");
+                                JSONObject pollutants = response.getJSONArray("data").getJSONObject(0);
 
-                                PM10.setText("" + componentObject.getDouble("pm10"));
-                                PM2_5.setText("" + componentObject.getDouble("pm2_5"));
-                                O3.setText("" + componentObject.getDouble("o3"));
-                                NO2.setText("" + componentObject.getDouble("no2"));
-                                SO2.setText("" + componentObject.getDouble("so2"));
-                                CO.setText("" + componentObject.getDouble("co"));
+                                PM10.setText("" + pollutants.getDouble("pm10"));
+                                PM2_5.setText("" + pollutants.getDouble("pm25"));
+                                O3.setText("" + pollutants.getDouble("o3"));
+                                NO2.setText("" + pollutants.getDouble("no2"));
+                                SO2.setText("" + pollutants.getDouble("so2"));
+                                CO.setText("" + pollutants.getDouble("co"));
 
                                 } catch (Exception e) {
                                     e.printStackTrace();

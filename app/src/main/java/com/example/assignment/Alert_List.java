@@ -96,7 +96,7 @@ public class Alert_List extends AppCompatActivity {
                                     }
 
                                     for(Alert.WeatherEntry entry:weatherEntries){
-                                        if(entry.temperature >310){
+                                        if(entry.temperature >=310){
                                             Alert.add(entry);
                                         }
                                         switch (entry.id){
