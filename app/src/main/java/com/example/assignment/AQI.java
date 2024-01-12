@@ -1,7 +1,6 @@
 package com.example.assignment;
 
 import android.annotation.SuppressLint;
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -29,12 +28,14 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Calendar;
 public class AQI extends AppCompatActivity implements IBaseGpsListener{
 
     TextView location;
@@ -42,13 +43,14 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
     TextView today;
     TextView tmrw;
     TextView tmrw2;
-//    TextView tmrw3;
+    TextView tmrw3;
     TextView todayv;
     TextView tmrwv;
     TextView tmrw2v;
-//    TextView tmrw3v;
+    TextView tmrw3v;
     Button detail;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +59,13 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
         location = findViewById(R.id.AQI_Location);
         lvl = findViewById(R.id.AQI_Lvl);
         today = findViewById(R.id.AQI_Date);
-        tmrw = findViewById(R.id.AQI_DateTmrw0);
-        tmrw2 = findViewById(R.id.AQI_DateTmrw);
-//        tmrw3 = findViewById(R.id.AQI_DateTmrw2);
+        tmrw = findViewById(R.id.AQI_DateTmrw);
+        tmrw2 = findViewById(R.id.AQI_DateTmrw2);
+        tmrw3 = findViewById(R.id.AQI_DateTmrw3);
         todayv = findViewById(R.id.AQI_Value);
-        tmrwv = findViewById(R.id.AQI_ValueTmrw0);
-        tmrw2v = findViewById(R.id.AQI_ValueTmrw);
-//        tmrw3v = findViewById(R.id.AQI_ValueTmrw2);
+        tmrwv = findViewById(R.id.AQI_ValueTmrw);
+        tmrw2v = findViewById(R.id.AQI_ValueTmrw2);
+        tmrw3v = findViewById(R.id.AQI_ValueTmrw3);
         detail = findViewById(R.id.Btn_details);
 
         Date();
@@ -148,7 +150,7 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
                 double lon = lastKnownLocation.getLongitude();
 
                 String apiKey = "bfae835a587c463187d4178050f47717";
-                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/airquality?lat=" + lat + "&lon=" + lon + "&start_date=" + firstDate() + "&end_date=" + lastDate() + "&key=" + apiKey;
+                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/airquality?lat=" + lat + "&lon=" + lon + "&key=" + apiKey;
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -162,54 +164,76 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
                                 try {
                                     //JSONObject json = new JSONObject(jsonData);
                                     JSONArray dataList = response.getJSONArray("data");
-
+                                    List<String> listdate = new ArrayList<>();
+                                    List<Integer> listaqi = new ArrayList<>();
                                     // Calculate daily average AQI for today and the next 3 days
-                                    int sumAQI = 0;
-                                    int count = 0;
 
                                     for (int i = 0; i < dataList.length(); i++) {
                                         JSONObject data = dataList.getJSONObject(i);
-                                        int aqi = data.getInt("aqi");
-                                        int day = (i) / 24;  // Assuming data is available every 1 hours, so 24 data points per day
-                                        sumAQI += aqi;
-                                        count++;
-
-                                        if (count % 24 == 0 && count != 0) {
-                                            int averageAQI = sumAQI / 24;
-                                            switch (day){
-                                                case 0:
-                                                    todayv.setText(String.valueOf(averageAQI));
-                                                    setTextViewWithColor(todayv,averageAQI);
-                                                    setTextViewWithColor(lvl, averageAQI);
-                                                    int color = lvl.getCurrentTextColor();
-                                                    if (color == ContextCompat.getColor(AQI.this, R.color.GOOD)) {
-                                                        lvl.setText("GOOD");
-                                                    } else if (color == ContextCompat.getColor(AQI.this, R.color.MODERATE)) {
-                                                        lvl.setText("MODERATE");
-                                                    } else if (color == ContextCompat.getColor(AQI.this, R.color.POOR)) {
-                                                        lvl.setText("POOR");
-                                                    } else if (color == ContextCompat.getColor(AQI.this, R.color.VERYPOOR)) {
-                                                        lvl.setText("VERY POOR");
-                                                    } else if (color == ContextCompat.getColor(AQI.this, R.color.black)) {
-                                                        lvl.setText("HAZARDOUS");
-                                                    }
-                                                    break;
-                                                case 1:
-                                                    tmrwv.setText(String.valueOf(averageAQI));
-                                                    setTextViewWithColor(tmrwv,averageAQI);
-                                                    break;
-                                                case 2:
-                                                    tmrw2v.setText(String.valueOf(averageAQI));
-                                                    setTextViewWithColor(tmrw2v,averageAQI);
-                                                    break;
-//                                                case 3:
-//                                                    tmrw3v.setText(String.valueOf(averageAQI));
-//                                                    setTextViewWithColor(tmrw3v,averageAQI);
-//                                                    break;
-                                            }
-                                            sumAQI = 0;
-                                        }
+                                        listaqi.add(data.getInt("aqi"));
+                                        listdate.add(data.getString("timestamp_local"));
                                     }
+
+                                    int count = 0;
+                                    int count2 = 0;
+                                    int sumAQI = listaqi.get(0);
+                                    int averageAQI = 0;
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                                    for (int i = 0; i < listdate.size(); i++) {
+                                            count++;
+//                                            Calendar cal1 = Calendar.getInstance();
+//                                            cal1.setTime(date);
+//                                            Calendar cal2 = Calendar.getInstance();
+//                                            cal2.setTime(date2);
+                                            if(i<listdate.size()-1){
+                                                Date date = sdf.parse(listdate.get(i));
+                                                Date date2 = sdf.parse(listdate.get(i + 1));
+                                                if (date.compareTo(date2)==0) {
+                                                    sumAQI += listaqi.get(i+1);
+                                                }else {
+                                                    averageAQI = sumAQI/count;
+                                                    switch (count2){
+                                                        case 0:
+                                                            todayv.setText(String.valueOf(averageAQI));
+                                                            setTextViewWithColor(todayv,averageAQI);
+                                                            setTextViewWithColor(lvl, averageAQI);
+                                                            int color = lvl.getCurrentTextColor();
+                                                            if (color == ContextCompat.getColor(AQI.this, R.color.GOOD)) {
+                                                                lvl.setText("GOOD");
+                                                            } else if (color == ContextCompat.getColor(AQI.this, R.color.MODERATE)) {
+                                                                lvl.setText("MODERATE");
+                                                            } else if (color == ContextCompat.getColor(AQI.this, R.color.POOR)) {
+                                                                lvl.setText("POOR");
+                                                            } else if (color == ContextCompat.getColor(AQI.this, R.color.VERYPOOR)) {
+                                                                lvl.setText("VERY POOR");
+                                                            } else if (color == ContextCompat.getColor(AQI.this, R.color.black)) {
+                                                                lvl.setText("HAZARDOUS");
+                                                            }
+                                                            break;
+                                                        case 1:
+                                                            tmrwv.setText(String.valueOf(averageAQI));
+                                                            setTextViewWithColor(tmrwv,averageAQI);
+                                                            break;
+                                                        case 2:
+                                                            tmrw2v.setText(String.valueOf(averageAQI));
+                                                            setTextViewWithColor(tmrw2v,averageAQI);
+                                                            break;
+                                                        case 3:
+                                                            tmrw3v.setText(String.valueOf(averageAQI));
+                                                            setTextViewWithColor(tmrw3v,averageAQI);
+                                                            break;
+                                                    }
+                                                    sumAQI=0;
+                                                    count=0;
+                                                    count2++;
+                                                }
+                                            }else{
+                                                averageAQI = sumAQI/count;
+                                                tmrw3v.setText(String.valueOf(averageAQI));
+                                                setTextViewWithColor(tmrw3v,averageAQI);
+                                            }
+                                        }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -287,21 +311,28 @@ public class AQI extends AppCompatActivity implements IBaseGpsListener{
         today.setText(todayS);
         tmrw.setText(tmrw2S);
         tmrw2.setText(tmrw3S);
-//        tmrw3.setText(tmrw4S);
+        tmrw3.setText(tmrw4S);
     }
-    public String firstDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date currentDate = new Date();
-        return sdf.format(currentDate);
+    public static boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 
-    public String lastDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_MONTH, 4);
-        Date lastDate = calendar.getTime();
-        return sdf.format(lastDate);
-    }
+//    public String firstDate() {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date currentDate = new Date();
+//        return sdf.format(currentDate);
+//    }
+//
+//    public String lastDate() {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(new Date());
+//        calendar.add(Calendar.DAY_OF_MONTH, 4);
+//        Date lastDate = calendar.getTime();
+//        return sdf.format(lastDate);
+//    }
 }
+
 

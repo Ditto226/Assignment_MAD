@@ -173,26 +173,37 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/AQI_DateTmrw0"
-                android:layout_width="match_parent"
-                android:layout_height="75dp"
-                android:autoSizeTextType="none"
-                android:background="@drawable/border"
-                android:text="tmrw"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:paddingTop="20sp"/>
-
-            <TextView
                 android:id="@+id/AQI_DateTmrw"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="50dp"
                 android:autoSizeTextType="none"
                 android:background="@drawable/border"
+                android:paddingTop="10sp"
+                android:text="tmrw"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/AQI_DateTmrw2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:autoSizeTextType="none"
+                android:background="@drawable/border"
+                android:paddingTop="10sp"
                 android:text="tmrw2"
                 android:textAlignment="center"
-                android:textSize="20sp"
-                android:paddingTop="20sp"/>
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/AQI_DateTmrw3"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:autoSizeTextType="none"
+                android:background="@drawable/border"
+                android:paddingTop="10sp"
+                android:text="tmrw3"
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -205,33 +216,47 @@
             tools:layout_editor_absoluteY="565dp">
 
             <TextView
-                android:id="@+id/AQI_ValueTmrw0"
-                android:layout_width="match_parent"
-                android:layout_height="75dp"
-                android:autoSizeTextType="none"
-                android:background="@drawable/border"
-                android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:paddingTop="20sp"/>
-
-            <TextView
                 android:id="@+id/AQI_ValueTmrw"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="50dp"
                 android:background="@drawable/border"
+                android:paddingTop="10sp"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="2"
                 android:text="0"
                 android:textAlignment="center"
-                android:textSize="20sp"
-                android:paddingTop="20sp"/>
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/AQI_ValueTmrw2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:autoSizeTextType="none"
+                android:background="@drawable/border"
+                android:paddingTop="10sp"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/AQI_ValueTmrw3"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border"
+                android:paddingTop="10sp"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
         </LinearLayout>
     </LinearLayout>
