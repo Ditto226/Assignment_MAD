@@ -38,7 +38,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
 
         holder.iconImageView.setImageDrawable(alertItem.getIconDrawable(context));
         holder.idTextView.setText("Alert: " + alertItem.getType());
-        holder.timeTextView.setText("Time: " + alertItem.getTime());
+        holder.timeTextView.setText(alertItem.getTime());
         holder.durationTextView.setText("Duration: ~"+alertItem.duration+" hours");
     }
 
