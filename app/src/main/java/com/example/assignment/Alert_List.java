@@ -25,8 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Alert_List extends AppCompatActivity {
 
@@ -64,8 +68,8 @@ public class Alert_List extends AppCompatActivity {
                 double lat = lastKnownLocation.getLatitude();
                 double lon = lastKnownLocation.getLongitude();
 
-                String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-                String apiUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&appid=" + apiKey;
+                String apiKey = "bfae835a587c463187d4178050f47717";
+                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/hourly?lat="+lat+"&lon="+lon+"&key=" + apiKey+"&hours=72";
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -81,14 +85,14 @@ public class Alert_List extends AppCompatActivity {
                                     List<Alert.WeatherEntry> Alert = new ArrayList<>();
 
                                     JSONObject jsonRootObject = new JSONObject(response.toString());
-                                    JSONArray weatherList = jsonRootObject.getJSONArray("list");
+                                    JSONArray weatherList = jsonRootObject.getJSONArray("data");
 
                                     for (int i = 0; i < weatherList.length(); i++) {
                                         JSONObject weatherObject = weatherList.getJSONObject(i);
 
-                                        double temperature = weatherObject.getJSONObject("main").getDouble("feels_like");
-                                        int id = weatherObject.getJSONArray("weather").getJSONObject(0).getInt("id");
-                                        String time = weatherObject.getString("dt_txt");
+                                        double temperature = weatherObject.getDouble("temp");
+                                        int id = weatherObject.getJSONObject("weather").getInt("code");
+                                        String time = weatherObject.getString("timestamp_local");
 
                                         // Create a WeatherEntry object and add it to the list
                                         Alert.WeatherEntry weatherEntry = new Alert.WeatherEntry(temperature, id, time);
@@ -96,7 +100,7 @@ public class Alert_List extends AppCompatActivity {
                                     }
 
                                     for(Alert.WeatherEntry entry:weatherEntries){
-                                        if(entry.temperature >=310){
+                                        if(entry.temperature >=30){
                                             Alert.add(entry);
                                         }
                                         switch (entry.id){
@@ -109,6 +113,10 @@ public class Alert_List extends AppCompatActivity {
                                                 break;
                                         }
                                     }
+//                                    for(int i =0;i<Alert.size();i++){
+                                        getDuration(Alert);
+//                                    }
+
                                     alertAdapter.setAlertList(Alert);
                                     alertAdapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
@@ -145,6 +153,37 @@ public class Alert_List extends AppCompatActivity {
         recyclerView.setAdapter(alertAdapter);
     }
 
+    void getDuration(List<Alert.WeatherEntry> alertlist) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE,ha dd-MM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+        int hours = 0;
+
+        for (int i = 0; i < alertlist.size() - 1; i++) {
+            String d1 = alertlist.get(i).getTime();
+            String d2 = alertlist.get(i + 1).getTime();
+
+            try {
+                Date date1 = sdf.parse(d1);
+                Date date2 = sdf.parse(d2);
+
+                if (sdf2.format(date1).equals(sdf2.format(date2))) {
+                    hours++;
+                    alertlist.get(i).setDuration(hours);
+                    alertlist.remove(i + 1);
+                    i--;
+                } else {
+                    hours = 0; // Reset the duration when dates are different
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // Set duration for the last entry (if any)
+        if (!alertlist.isEmpty()) {
+            alertlist.get(alertlist.size() - 1).setDuration(hours);
+        }
+    }
 
 }
 

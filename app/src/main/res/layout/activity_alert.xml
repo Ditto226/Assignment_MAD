@@ -23,6 +23,21 @@
         app:layout_constraintTop_toBottomOf="@+id/Weather" />
 
     <TextView
+        android:id="@+id/Alert_Duration"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:text="Duration"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Alert_Time" />
+
+    <TextView
         android:id="@+id/Alert_Location"
         android:layout_width="300dp"
         android:layout_height="70dp"
@@ -74,7 +89,7 @@
         app:layout_constraintBottom_toTopOf="@+id/Message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Alert_Time" />
+        app:layout_constraintTop_toBottomOf="@+id/Alert_Duration" />
 
     <TextView
         android:id="@+id/Message"
@@ -93,7 +108,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Alert_Time" />
+        app:layout_constraintTop_toBottomOf="@+id/Alert_Duration" />
 
     <TextView
         android:id="@+id/Advice"
@@ -102,17 +117,6 @@
         android:text="PLS STAY AT HOME FOR THE MEANTIME"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Message" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="*forecast data is for every 3 hours"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Message" />

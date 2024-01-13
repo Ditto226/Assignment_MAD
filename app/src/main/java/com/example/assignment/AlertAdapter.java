@@ -39,6 +39,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         holder.iconImageView.setImageDrawable(alertItem.getIconDrawable(context));
         holder.idTextView.setText("Alert: " + alertItem.getType());
         holder.timeTextView.setText("Time: " + alertItem.getTime());
+        holder.durationTextView.setText("Duration: ~"+alertItem.duration+" hours");
     }
 
     @Override
@@ -50,12 +51,14 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         ImageView iconImageView;
         TextView idTextView;
         TextView timeTextView;
+        TextView durationTextView;
 
         public AlertViewHolder(final View itemView) {
             super(itemView);
             iconImageView = itemView.findViewById(R.id.iconImageView);
             idTextView = itemView.findViewById(R.id.typeTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
+            durationTextView = itemView.findViewById(R.id.durationTextView);
         }
     }
 }

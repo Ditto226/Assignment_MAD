@@ -1,7 +1,5 @@
 package com.example.assignment;
 
-import static java.security.AccessController.getContext;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -48,7 +46,9 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
     ImageView weather;
     TextView advice;
     Button alert;
-
+    TextView duration;
+    List<Alert.WeatherEntry> weatherEntries = new ArrayList<>();
+    static List<Alert.WeatherEntry> alertlist = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,6 +62,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         weather = findViewById(R.id.Weather);
         alert = findViewById(R.id.Alert);
         advice = findViewById(R.id.Advice);
+        duration= findViewById(R.id.Alert_Duration);
 
         Location();
         alert();
@@ -86,8 +87,8 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
                 double lat = lastKnownLocation.getLatitude();
                 double lon = lastKnownLocation.getLongitude();
 
-                String apiKey = "f6b0e9e985d5c35e9e2834c0546415e1";
-                String apiUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&appid=" + apiKey;
+                String apiKey = "bfae835a587c463187d4178050f47717";
+                String apiUrl = "https://api.weatherbit.io/v2.0/forecast/hourly?lat="+lat+"&lon="+lon+"&key=" + apiKey+"&hours=72";
 
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -99,26 +100,24 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    List<Alert.WeatherEntry> weatherEntries = new ArrayList<>();
-                                    List<Alert.WeatherEntry> alertlist = new ArrayList<>();
 
                                     JSONObject jsonRootObject = new JSONObject(response.toString());
-                                    JSONArray weatherList = jsonRootObject.getJSONArray("list");
+                                    JSONArray weatherList = jsonRootObject.getJSONArray("data");
 
                                     for (int i = 0; i < weatherList.length(); i++) {
                                         JSONObject weatherObject = weatherList.getJSONObject(i);
 
-                                        double temperature = weatherObject.getJSONObject("main").getDouble("feels_like");
-                                        int id = weatherObject.getJSONArray("weather").getJSONObject(0).getInt("id");
-                                        String time = weatherObject.getString("dt_txt");
+                                        double temperature = weatherObject.getDouble("temp");
+                                        int id = weatherObject.getJSONObject("weather").getInt("code");
+                                        String time = weatherObject.getString("timestamp_local");
 
                                         // Create a WeatherEntry object and add it to the list
-                                        Alert.WeatherEntry weatherEntry = new Alert.WeatherEntry(temperature, id, time);
+                                        WeatherEntry weatherEntry = new WeatherEntry(temperature, id, time);
                                         weatherEntries.add(weatherEntry);
                                     }
 
                                     for(Alert.WeatherEntry entry:weatherEntries){
-                                        if(entry.temperature>=310){
+                                        if(entry.temperature>=30){
                                             alertlist.add(entry);
                                         }
                                         switch (entry.id){
@@ -136,6 +135,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
                                         message.setText(alertlist.get(0).getMessage());
                                         Context context = com.example.assignment.Alert.this;
                                         weather.setImageDrawable(alertlist.get(0).getIconDrawable(context));
+                                        duration.setText("~"+alertlist.get(0).getDuration()+" hours");
                                     }else{
                                         time1.setText("");
                                         message.setText("Rest assure! Your place has no extreme weather for the next 5 days");
@@ -168,27 +168,29 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         public double temperature;
         public int id;
         public String time;
+        public int duration;
         public WeatherEntry(double temperature, int id,String time) {
             this.temperature = temperature;
             this.id = id;//502-504 heavyrain, 200-202,210-212,221,230-232 thunderstorm, 701,711,721,741 fog etc.
             this.time = time;
+            this.duration = 1;
         }
 
         String getType(){
-            if(temperature>=310){
-                return  "blazing hot";
+            if(temperature>=30){
+                return  "Blazing hot";
             }
             switch (id) {
                 case 501:case 502: case 503: case 504:
-                    return "heavy rain";
+                    return "Heavy rain";
                 case 200: case 201: case 202:
                 case 210: case 211: case 212:
                 case 221: case 230: case 231:
                 case 232:
-                    return "thunderstorm";
+                    return "Thunderstorm";
                 case 701: case 711:
                 case 721: case 741:
-                    return "foggy";
+                    return "Foggy";
                 default:
                     // You can throw an exception or return a default drawable
                     // For example, returning R.drawable.default_icon
@@ -197,7 +199,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         }
 
         String getMessage(){
-            if(temperature>=310){
+            if(temperature>=30){
                 return  "Its going to be scorching outside! Drink plenty of water and stay hydrated!";
             }
             switch (id) {
@@ -220,7 +222,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
 
         String getTime(){
             try{
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 Date date = inputFormat.parse(time);
 
                 // Format the Date object into the desired output format
@@ -233,9 +235,12 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
             return null;
         }
 
+        int setDuration(int duratio){
+            return this.duration = duratio;
+        }
         Drawable getIconDrawable(Context context) {
             Resources resources = context.getResources(); // Assuming this method is within an Activity or Context
-            if(temperature>=310){
+            if(temperature>=30){
                 return  resources.getDrawable(R.drawable.hot);
             }
             switch (id) {
@@ -259,8 +264,42 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
             return temperature;
         }
 
+        int getDuration() {
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE,ha dd-MM-yyyy", Locale.ENGLISH);
+            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+            int hours = 0;
+
+            for (int i = 0; i < alertlist.size() - 1; i++) {
+                String d1 = alertlist.get(i).getTime();
+                String d2 = alertlist.get(i + 1).getTime();
+                try {
+                    Date date1 = sdf.parse(d1);
+                    Date date2 = sdf.parse(d2);
+
+                    if (sdf2.format(date1).equals(sdf2.format(date2))) {
+                        hours++;
+                        alertlist.get(i).setDuration(hours);
+                        alertlist.remove(i + 1);
+                        i--;
+                    } else {
+                        hours = 0; // Reset the duration when dates are different
+                    }
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // Set duration for the last entry (if any)
+            if (!alertlist.isEmpty()) {
+                alertlist.get(alertlist.size() - 1).setDuration(hours);
+            }
+            return alertlist.get(0).duration;
+        }
         // Add getters if needed
     }
+
+
+
 
     @SuppressLint("MissingPermission")
     private void Location(){
@@ -293,6 +332,7 @@ public class Alert extends AppCompatActivity implements IBaseGpsListener{
         }
         return "Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude();
     }
+
     @Override
     public void onLocationChanged(Location locations) {
         location.setText(hereLocation(locations));
